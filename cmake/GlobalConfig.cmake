@@ -3,9 +3,9 @@
 # ##############################################################################
 
 # global configurations
-macro(myproj_global_config)
+macro(smoldb_global_config)
     # ccache
-    if(myproj_ENABLE_CCACHE)
+    if(smoldb_ENABLE_CCACHE)
         message(STATUS "Configured to use ccache.")
         find_program(CCACHE ccache)
         if(NOT CCACHE)
@@ -18,7 +18,7 @@ macro(myproj_global_config)
     endif()
 
     # lld
-    if(myproj_ENABLE_LLD)
+    if(smoldb_ENABLE_LLD)
         message(STATUS "Configured to use lld.")
         find_program(LLD lld)
         if(NOT LLD)
@@ -33,12 +33,12 @@ macro(myproj_global_config)
     endif()
 
     # IPO or LTO
-    if(myproj_ENABLE_LTO)
+    if(smoldb_ENABLE_LTO)
         set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
     endif()
 
     # warnings
-    if(myproj_ENABLE_WARNING)
+    if(smoldb_ENABLE_WARNING)
         message(STATUS "Turning on more warnings")
         if(MSVC)
             add_compile_options("/W4")
@@ -49,7 +49,7 @@ macro(myproj_global_config)
     endif()
 
     # warning as error
-    if(myproj_WARNING_AS_ERR)
+    if(smoldb_WARNING_AS_ERR)
         message(STATUS "Turn on warning-as-error")
         if(MSVC)
             add_compile_options("/WX")

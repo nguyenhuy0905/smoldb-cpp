@@ -3,7 +3,7 @@
 # ##############################################################################
 
 # check if ASan can be linked
-function(myproj_check_san_compile asan_output_var ubsan_output_var
+function(smoldb_check_san_compile asan_output_var ubsan_output_var
          msan_output_var tsan_output_var)
     set(test_code
         "

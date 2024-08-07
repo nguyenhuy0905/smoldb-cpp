@@ -6,42 +6,42 @@ include(CheckCXXSourceCompiles)
 
 # set PCH headers when PCH is enabled
 macro(set_pch_options)
-    cmake_parse_arguments(myproj "" "" PCH ${ARGN})
+    cmake_parse_arguments(smoldb "" "" PCH ${ARGN})
 endmacro()
 
 # local configs
-macro(myproj_local_config)
-    if(myproj_ENABLE_PCH)
-        target_precompile_headers(myproj_compile_opts INTERFACE ${myproj_PCH})
+macro(smoldb_local_config)
+    if(smoldb_ENABLE_PCH)
+        target_precompile_headers(smoldb_compile_opts INTERFACE ${smoldb_PCH})
     endif()
 
-    if(NOT myproj_ENABLE_OPTIMIZATION)
+    if(NOT smoldb_ENABLE_OPTIMIZATION)
         if(MSVC)
-            target_compile_options(myproj_compile_opts INTERFACE "/Od")
+            target_compile_options(smoldb_compile_opts INTERFACE "/Od")
         else()
-            target_compile_options(myproj_compile_opts INTERFACE "-O0")
+            target_compile_options(smoldb_compile_opts INTERFACE "-O0")
         endif()
     endif()
 
-    if(myproj_ENABLE_COVERAGE)
+    if(smoldb_ENABLE_COVERAGE)
         if(MSVC)
-            target_compile_options(myproj_compile_opts
+            target_compile_options(smoldb_compile_opts
                                    INTERFACE "/fsanitize-coverage")
         else()
             if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-                target_compile_options(myproj_compile_opts
+                target_compile_options(smoldb_compile_opts
                                        INTERFACE "--coverage;-ftest-coverage")
                 target_link_libraries(
-                    myproj_compile_opts
+                    smoldb_compile_opts
                     INTERFACE "-fprofile-arcs;-ftest-coverage")
             elseif("${CMAKE_CXX_COMPILER_ID}" STREQUAL ".*Clang")
                 target_compile_options(
-                    myproj_compile_opts
+                    smoldb_compile_opts
                     INTERFACE
                         "-fprofile-instr-generate;-fcoverage-mapping;-mllvm;-runtime-counter-relocation"
                 )
                 target_link_libraries(
-                    myproj_compile_opts
+                    smoldb_compile_opts
                     INTERFACE
                         "-fprofile-instr-generate;-fcoverage-mapping;-mllvm;-runtime-counter-relocation"
                 )
@@ -50,68 +50,68 @@ macro(myproj_local_config)
     endif()
 
     include(cmake/CheckSanitizerSourceCompile.cmake)
-    if(myproj_ENABLE_ASAN
-       OR myproj_ENABLE_UBSAN
-       OR myproj_ENABLE_MSAN
-       OR myproj_ENABLE_TSAN)
+    if(smoldb_ENABLE_ASAN
+       OR smoldb_ENABLE_UBSAN
+       OR smoldb_ENABLE_MSAN
+       OR smoldb_ENABLE_TSAN)
         message(
             STATUS
                 "Running checks on whether ASan, UBSan, MSan or TSan can be linked"
         )
-        myproj_check_san_compile(myproj_ASAN_COMPILE myproj_UBSAN_COMPILE
-                                 myproj_MSAN_COMPILE myproj_TSAN_COMPILE)
+        smoldb_check_san_compile(smoldb_ASAN_COMPILE smoldb_UBSAN_COMPILE
+                                 smoldb_MSAN_COMPILE smoldb_TSAN_COMPILE)
     endif()
 
-    if(myproj_ENABLE_ASAN AND proj_ASAN_COMPILE)
+    if(smoldb_ENABLE_ASAN AND proj_ASAN_COMPILE)
         if(MSVC)
-            target_compile_options(myproj_compile_opts
+            target_compile_options(smoldb_compile_opts
                                    INTERFACE "/fsanitize=address")
             target_compile_definitions(
-                myproj_compile_opts
+                smoldb_compile_opts
                 INTERFACE
                     "/D_DISABLE_STRING_ANNOTATION;/D_DISABLE_VECTOR_ANNOTATION")
-            target_link_libraries(myproj_compile_opts
+            target_link_libraries(smoldb_compile_opts
                                   INTERFACE "/fsanitize=address")
         else()
             target_compile_options(
-                myproj_compile_opts
+                smoldb_compile_opts
                 INTERFACE
                     "-fsanitize=address;-fno-omit-frame-pointer;-fno-optimize-sibling-calls"
             )
-            target_link_libraries(myproj_compile_opts
+            target_link_libraries(smoldb_compile_opts
                                   INTERFACE "-fsanitize=address")
         endif()
     endif()
 
-    if(myproj_ENABLE_UBSAN AND myproj_UBSAN_COMPILE)
-        target_compile_options(myproj_compile_opts
+    if(smoldb_ENABLE_UBSAN AND smoldb_UBSAN_COMPILE)
+        target_compile_options(smoldb_compile_opts
                                INTERFACE "-fsanitize=undefined")
-        target_link_libraries(myproj_compile_opts
+        target_link_libraries(smoldb_compile_opts
                               INTERFACE "-fsanitize=undefined")
     endif()
 
-    if(myproj_ENABLE_MSAN AND myproj_MSAN_COMPILE)
+    if(smoldb_ENABLE_MSAN AND smoldb_MSAN_COMPILE)
         target_compile_options(
-            myproj_compile_opts
+            smoldb_compile_opts
             INTERFACE
                 "-fsanitize=memory;-fno-omit-frame-pointer;-fno-optimize-sibling-calls"
         )
-        target_link_libraries(myproj_compile_opts INTERFACE "-fsanitize=memory")
+        target_link_libraries(smoldb_compile_opts INTERFACE "-fsanitize=memory")
     endif()
 
-    if(myproj_ENABLE_TSAN AND myproj_TSAN_COMPILE)
-        target_compile_options(myproj_compile_opts
+    if(smoldb_ENABLE_TSAN AND smoldb_TSAN_COMPILE)
+        target_compile_options(smoldb_compile_opts
                                INTERFACE "-fsanitize=thread")
-        target_link_libraries(myproj_compile_opts INTERFACE "-fsanitize=thread")
+        target_link_libraries(smoldb_compile_opts INTERFACE "-fsanitize=thread")
     endif()
 
-    if(myproj_USE_LIBCXX)
+    if(smoldb_USE_LIBCXX)
         include(cmake/CheckLibcxxSourceCompile.cmake)
-        myproj_check_libcxx_compile(myproj_LIBCXX_COMPILE)
-        if(myproj_LIBCXX_COMPILE)
-            target_compile_options(myproj_compile_opts
+        smoldb_check_libcxx_compile(smoldb_LIBCXX_COMPILE)
+        if(smoldb_LIBCXX_COMPILE)
+            target_compile_options(smoldb_compile_opts
                                    INTERFACE "-stdlib=libc++")
-            target_link_libraries(myproj_compile_opts
+            target_link_libraries(smoldb_compile_opts
                                   INTERFACE "-stdlib=libc++")
         endif()
     endif()
