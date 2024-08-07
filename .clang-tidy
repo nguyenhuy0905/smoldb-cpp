@@ -1,0 +1,20 @@
+---
+Checks:          '*,-abseil*,-altera*,-android*,-fuchsia*,-google*,-llvm*,-zircon*,*use-nullptr'
+WarningsAsErrors: '*'
+HeaderFileExtensions:
+  - ''
+  - h
+  - hh
+  - hpp
+  - hxx
+ImplementationFileExtensions:
+  - c
+  - cc
+  - cpp
+  - cxx
+HeaderFilterRegex: ''
+CheckOptions:
+  - key: readability-identifier-length.IgnoredVariableNames
+    value: 'i|j|k|p'
+  - key: readability-identifier-length.IgnoredParameterNames
+    value: 'i|j|k|p'
