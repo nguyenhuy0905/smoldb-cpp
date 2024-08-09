@@ -5,12 +5,20 @@
 include(CheckCXXSourceCompiles)
 
 # set PCH headers when PCH is enabled
+# Note, only effective for the calls in 
 macro(set_pch_options)
     cmake_parse_arguments(smoldb "" "" PCH ${ARGN})
 endmacro()
 
 # local configs
 macro(smoldb_local_config)
+    if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" OR "${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo")
+        if(MSVC)
+            target_compile_definitions(smoldb_compile_opts INTERFACE "/DDEBUG")
+        else()
+            target_compile_definitions(smoldb_compile_opts INTERFACE "-DDEBUG")
+        endif()
+    endif()
     if(smoldb_ENABLE_PCH)
         target_precompile_headers(smoldb_compile_opts INTERFACE ${smoldb_PCH})
     endif()
@@ -112,7 +120,7 @@ macro(smoldb_local_config)
             target_compile_options(smoldb_compile_opts
                                    INTERFACE "-stdlib=libc++")
             target_link_libraries(smoldb_compile_opts
-                                  INTERFACE "-stdlib=libc++")
+                                  INTERFACE "-stdlib=libc++;-lc++abi")
         endif()
     endif()
 
