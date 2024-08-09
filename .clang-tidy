@@ -1,5 +1,5 @@
 ---
-Checks:          '*,-abseil*,-altera*,-android*,-fuchsia*,-google*,-llvm*,-zircon*,*use-nullptr'
+Checks:          '-*,cppcoreguidelines-*,modernize-*,bugprone-*'
 WarningsAsErrors: '*'
 HeaderFileExtensions:
   - ''
