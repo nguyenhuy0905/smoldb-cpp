@@ -7,9 +7,9 @@ project(
     smoldb
     VERSION 0.1.0
     LANGUAGES C CXX
-    HOMEPAGE_URL
-        "https://github.com/huynguyen-and-friend-projects/cmake-template"
-        DESCRIPTION "Somewhat poratble CMake project template")
+    HOMEPAGE_URL "https://github.com/nguyenhuy0905/smoldb-cpp"
+    DESCRIPTION
+        "A simple DB in C++. A \"refactor\" of one of my collab projects")
 
 if(NOT CMAKE_CXX_STANDARD)
     message(STATUS "C++ standard not set, default to C++23")
