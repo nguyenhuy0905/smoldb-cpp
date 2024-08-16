@@ -1,7 +1,7 @@
 #ifndef SMOLDB_CPP_MODULE_CFG_H
 #define SMOLDB_CPP_MODULE_CFG_H
 
-#include "myproj_export.h" // NOLINT
+#include "smoldb_cpp_export.h" // NOLINT
 
 /*
  * Simply switch SMOLDB_CPP_EXPORT into export (module)
