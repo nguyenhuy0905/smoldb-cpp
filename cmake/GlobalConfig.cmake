@@ -5,9 +5,9 @@
 include(CheckCXXSourceCompiles)
 
 # global configurations
-macro(myproj_global_config)
+macro(smoldb_cpp_global_config)
     # ccache
-    if(myproj_ENABLE_CCACHE)
+    if(smoldb_cpp_ENABLE_CCACHE)
         message(STATUS "Configured to use ccache.")
         find_program(CCACHE ccache)
         if(NOT CCACHE)
@@ -20,7 +20,7 @@ macro(myproj_global_config)
     endif()
 
     # lld
-    if(myproj_ENABLE_LLD)
+    if(smoldb_cpp_ENABLE_LLD)
         message(STATUS "Configured to use lld.")
         find_program(LLD lld)
         if(NOT LLD)
@@ -35,12 +35,12 @@ macro(myproj_global_config)
     endif()
 
     # IPO or LTO
-    if(myproj_ENABLE_LTO)
+    if(smoldb_cpp_ENABLE_LTO)
         set(CMAKE_INTERPROCEDURAL_OPTIMIZATION ON)
     endif()
 
     # warnings
-    if(myproj_ENABLE_WARNING)
+    if(smoldb_cpp_ENABLE_WARNING)
         message(STATUS "Turning on more warnings")
         if(MSVC)
             add_compile_options("/W4")
@@ -50,7 +50,7 @@ macro(myproj_global_config)
         endif()
     endif()
 
-    if(myproj_ENABLE_MODULE)
+    if(smoldb_cpp_ENABLE_MODULE)
         if(MSVC)
             add_compile_definitions("/DENABLE_MODULE")
         else()
@@ -59,17 +59,17 @@ macro(myproj_global_config)
     endif()
 
     # libc++
-    if(myproj_USE_LIBCXX)
+    if(smoldb_cpp_USE_LIBCXX)
         include(cmake/CheckLibcxxSourceCompile.cmake)
-        myproj_check_libcxx_compile(myproj_LIBCXX_COMPILE)
-        if(myproj_LIBCXX_COMPILE)
+        smoldb_cpp_check_libcxx_compile(smoldb_cpp_LIBCXX_COMPILE)
+        if(smoldb_cpp_LIBCXX_COMPILE)
             set(CMAKE_CXX_LINKER_FLAGS
                 "${CMAKE_CXX_LINKER_FLAGS} -stdlib=libc++;-lc++abi")
         endif()
     endif()
 
     # warning as error
-    if(myproj_WARNING_AS_ERR)
+    if(smoldb_cpp_WARNING_AS_ERR)
         message(STATUS "Turn on warning-as-error")
         if(MSVC)
             add_compile_options("/WX")

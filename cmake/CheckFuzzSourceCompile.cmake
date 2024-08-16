@@ -3,7 +3,7 @@
 # ##############################################################################
 
 # check if libFuzzer can be linked
-function(myproj_check_fuzz_compile output_var)
+function(smoldb_cpp_check_fuzz_compile output_var)
     set(test_code
         "
 #include <cstdint>

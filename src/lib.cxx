@@ -11,6 +11,6 @@ module;
 export module lib;
 #endif
 
-MYPROJ_EXPORT void say_hello() { // NOLINT
+SMOLDB_CPP_EXPORT void say_hello() { // NOLINT
     std::print("Hello world\n");
 }

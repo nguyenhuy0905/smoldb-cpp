@@ -4,7 +4,7 @@
 
 # check if ASan can be linked,
 # then link whichever sanitizer(s) is/are included
-function(myproj_check_san_compile target visibility)
+function(smoldb_cpp_check_san_compile target visibility)
     set(sanitizer_list "")
     set(test_code
         "
@@ -13,22 +13,22 @@ function(myproj_check_san_compile target visibility)
     }
     ")
 
-    if(myproj_ENABLE_ASAN)
+    if(smoldb_cpp_ENABLE_ASAN)
         list(APPEND san_list "address")
     endif()
-    if(myproj_ENABLE_UBSAN)
+    if(smoldb_cpp_ENABLE_UBSAN)
         list(APPEND san_list "undefined")
     endif()
-    if(myproj_ENABLE_MSAN)
+    if(smoldb_cpp_ENABLE_MSAN)
         list(APPEND san_list "memory")
     endif()
-    if(myproj_ENABLE_TSAN)
+    if(smoldb_cpp_ENABLE_TSAN)
         list(APPEND san_list "thread")
     endif()
     list(JOIN san_list "," sanitizer_option)
     if(MSVC)
         set(CMAKE_REQUIRED_FLAGS "/fsanitize=${sanitizer_option}")
-        if(myproj_ENABLE_ASAN)
+        if(smoldb_cpp_ENABLE_ASAN)
             set(CMAKE_REQUIRED_DEFINITIONS
             "/D_DISABLE_VECTOR_ANNOTATION;/D_DISABLE_STRING_ANNOTATION")
         endif()

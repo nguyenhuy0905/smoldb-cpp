@@ -1,5 +1,5 @@
 # Check whether libc++ can be linked
-function(myproj_check_libcxx_compile libcxx_output_var)
+function(smoldb_cpp_check_libcxx_compile libcxx_output_var)
     set(test_code "int main() { return 0; }")
     set(CMAKE_REQUIRED_FLAGS "-stdlib=libc++")
     set(CMAKE_REQUIRED_LIBRARIES "-stdlib=libc++")

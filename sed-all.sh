@@ -7,7 +7,7 @@ oldname="myproj"
 # change this.
 # and if you want to change another time, change newname to the current oldname,
 # then change newname to the name you want.
-newname="myproj"
+newname="smoldb_cpp"
 
 # read .gitignore,
 # filter to include only ignored directories,

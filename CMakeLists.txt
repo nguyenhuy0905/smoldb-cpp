@@ -1,11 +1,11 @@
 # ##############################################################################
-# myproj top level CMakeLists
+# smoldb_cpp top level CMakeLists
 # ##############################################################################
 
 # module support starts at 3.28
 cmake_minimum_required(VERSION 3.28)
 project(
-    myproj
+    smoldb_cpp
     VERSION 0.1.0
     LANGUAGES C CXX
     HOMEPAGE_URL
@@ -33,8 +33,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN ON)
 
-add_library(myproj_compile_opts INTERFACE)
-target_compile_features(myproj_compile_opts
+add_library(smoldb_cpp_compile_opts INTERFACE)
+target_compile_features(smoldb_cpp_compile_opts
                         INTERFACE cxx_std_${CMAKE_CXX_STANDARD})
 
 message(STATUS "Configure project options")
@@ -42,11 +42,11 @@ include(CMakeOptions.cmake)
 
 if(NOT MSVC)
     # there's no such thing as a "C standard" in MSVC
-    target_compile_features(myproj_compile_opts
+    target_compile_features(smoldb_cpp_compile_opts
                             INTERFACE c_std_${CMAKE_C_STANDARD})
 endif()
 
-if(myproj_PACK)
+if(smoldb_cpp_PACK)
     include(CPack)
     include(cmake/PackConfig.cmake)
 endif()
@@ -54,27 +54,27 @@ endif()
 add_subdirectory(src)
 add_subdirectory(submodule)
 
-if(myproj_ENABLE_UNIT_TEST)
+if(smoldb_cpp_ENABLE_UNIT_TEST)
     message(STATUS "Unit test enabled")
     add_subdirectory(unittest)
 endif()
 
-if(myproj_ENABLE_FUZZ_TEST)
+if(smoldb_cpp_ENABLE_FUZZ_TEST)
     message(STATUS "Fuzz test enabled")
     message(STATUS "Checking if libFuzzer linkable")
     include(cmake/CheckFuzzSourceCompile.cmake)
-    myproj_check_fuzz_compile(myproj_FUZZ_COMPILE)
-    if(myproj_FUZZ_COMPILE)
+    smoldb_cpp_check_fuzz_compile(smoldb_cpp_FUZZ_COMPILE)
+    if(smoldb_cpp_FUZZ_COMPILE)
         add_subdirectory(fuzztest)
     endif()
 endif()
 
-if(myproj_ENABLE_BENCHMARK)
+if(smoldb_cpp_ENABLE_BENCHMARK)
     message(STATUS "Benchmark enabled")
     add_subdirectory(benchmark)
 endif()
 
-if(myproj_ENABLE_DOXYGEN)
+if(smoldb_cpp_ENABLE_DOXYGEN)
     message(STATUS "Doxygen enabled. Generating docs...")
     include(cmake/Doxygen.cmake)
 endif()
