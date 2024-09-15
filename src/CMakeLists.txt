@@ -1,6 +1,7 @@
 include(../cmake/ModuleIfEnabled.cmake)
 add_subdirectory(dbfile)
 add_subdirectory(table)
+add_subdirectory(data_type)
 
 add_executable(smoldb_cpp_main)
 target_sources(smoldb_cpp_main PRIVATE main.cxx)
