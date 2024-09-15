@@ -63,7 +63,8 @@ option(
     OFF)
 
 # installing and packing
-cmake_dependent_option(smoldb_cpp_INSTALL "Configure installation for this project"
+cmake_dependent_option(smoldb_cpp_INSTALL
+                    "Configure installation for this project"
                        OFF "PROJECT_IS_TOP_LEVEL" OFF)
 cmake_dependent_option(smoldb_cpp_PACK "Configure packing for this project" OFF
                        "PROJECT_IS_TOP_LEVEL" OFF)
@@ -99,6 +100,6 @@ endif()
 include(cmake/ProjectConfig.cmake)
 message(STATUS "Configuring project-specific options.")
 if(smoldb_cpp_ENABLE_PCH)
-    set_pch_options(PCH <memory> <string>)
+    set_pch_options(PCH <memory> <string> <filesystem> <expected> <cstdint>)
 endif()
 smoldb_cpp_local_config()
