@@ -26,16 +26,18 @@ class Row {
      */
     template <CT T>
     [[nodiscard]] auto get_data_at(std::size_t index) const
-        -> std::expected<const T&, DataAccessError> {
+        -> std::expected<std::reference_wrapper<const T>, DataAccessError> {
 
         if (index >= m_cols.size()) {
             return std::unexpected(DataAccessError::IndexOutOfBound);
         }
-        if (not std::holds_alternative<T>(m_cols[index])) {
+        if (not std::holds_alternative<Column<T>>(m_cols[index])) {
             return std::unexpected(DataAccessError::InvalidDataType);
         }
 
-        return {std::get<T>(m_cols[index])};
+        const Column<T>& col = std::get<Column<T>>(m_cols[index]);
+
+        return {col.get_data()};
     }
 
     /**
@@ -56,7 +58,6 @@ class Row {
      *
      * @param index the specifed column index.
      * @param data the specifed value.
-     * @return
      */
     template <CT T>
     auto set_data_at(std::size_t index,
@@ -72,12 +73,35 @@ class Row {
         // technically this ccould be an `if constexpr`, but in no situation
         // will this be evaluated at compile time. So, `constexpr` here would
         // be misleading.
-        if (not std::holds_alternative<T>(m_cols[index])) {
+        if (not std::holds_alternative<Column<T>>(m_cols[index])) {
             return std::unexpected(DataAccessError::InvalidDataType);
         }
 
-        m_cols[index] = std::forward<T>(data);
+        Column<T>& col = std::get<Column<T>>(m_cols[index]);
+        col.set_data(std::forward<T>(data));
+
         return {};
+    }
+
+    /**
+     * @brief A wrapper around `set_data_at` for varchar type.
+     * Returns nothing if successful.
+     * Returns `DataAccessError::IndexOutOfBound` if index is out of bound.
+     * Returns `DataAccessError::InvalidDataType` if `T` is not the same as
+     * the current alternative held by the column.
+     *
+     * @param index the specifed column index.
+     * @param data the specifed value.
+     */
+    auto set_varchar_data_at(std::size_t index, auto&& data)
+        -> std::expected<void, DataAccessError> {
+        return set_data_at<std::string>(index, std::forward<std::string>(data));
+    }
+
+    auto set_uint32_data_at(std::size_t index, auto&& data)
+        -> std::expected<void, DataAccessError> {
+        return set_data_at<std::uint32_t>(index,
+                                          std::forward<std::uint32_t>(data));
     }
 
   private:

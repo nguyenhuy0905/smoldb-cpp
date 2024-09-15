@@ -39,7 +39,7 @@ class RowBuilder {
      */
     auto set_rowid(std::uint32_t id)
         -> std::expected<std::reference_wrapper<RowBuilder>, RowBuildingError> {
-        if (!is_rowid_set) {
+        if (is_rowid_set) {
             return std::unexpected(RowBuildingError::IDAlreadySet);
         }
         m_result.m_rowid = id;
@@ -71,10 +71,10 @@ class RowBuilder {
      * @return the resultant row.
      */
     [[nodiscard]] auto build() const -> std::expected<Row, RowBuildingError> {
-        if (!any_col_added) {
+        if (not any_col_added) {
             return std::unexpected(RowBuildingError::NoColumnAdded);
         }
-        if (!is_rowid_set) {
+        if (not is_rowid_set) {
             return std::unexpected(RowBuildingError::IDNotSet);
         }
         return {std::move(m_result)};
