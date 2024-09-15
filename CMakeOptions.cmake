@@ -21,7 +21,8 @@ endif()
 # If there's another top-level project, high chance that project already sets
 # these options.
 option(smoldb_cpp_ENABLE_CCACHE "Use ccache" OFF)
-option(smoldb_cpp_ENABLE_LLD "Use lld instead of the compiler-default linker" OFF)
+option(smoldb_cpp_ENABLE_LLD "Use lld instead of the compiler-default linker"
+    OFF)
 option(smoldb_cpp_ENABLE_LTO "Enable link-time optimization" OFF)
 cmake_dependent_option(
     smoldb_cpp_ENABLE_MODULE "Enable modules. Require C++20 and above" OFF
@@ -100,6 +101,11 @@ endif()
 include(cmake/ProjectConfig.cmake)
 message(STATUS "Configuring project-specific options.")
 if(smoldb_cpp_ENABLE_PCH)
-    set_pch_options(PCH <memory> <string> <filesystem> <expected> <cstdint>)
+    set_pch_options(PCH <memory>
+                        <string>
+                        <filesystem>
+                        <expected>
+                        <cstdint>
+                        <print>)
 endif()
 smoldb_cpp_local_config()
