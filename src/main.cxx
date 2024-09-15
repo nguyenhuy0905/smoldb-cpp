@@ -1,3 +1,4 @@
+#include "column_builder.hxx"
 #include "row.hxx"
 #include "row_builder.hxx"
 #include <print>
@@ -8,8 +9,10 @@ auto main() -> int {
         smoldb::RowBuilder::init()
             .set_rowid(0)
             .and_then([](smoldb::RowBuilder& rowb) {
+                // note: copy elision. No move needed here.
                 return rowb.add_column(
-                    smoldb::Column<std::uint32_t>{1, "TestCol", 2U});
+                    smoldb::ColumnBuilder::build<std::uint32_t>(
+                        1, "TestCol", 2U));
             })
             .and_then([](smoldb::RowBuilder& rowb) { return rowb.build(); });
 

@@ -2,6 +2,7 @@
 #define SMOLDB_CPP_ROW_HXX
 
 #include "column.hxx"
+#include "data_type.hxx"
 #include <cstdint>
 #include <expected>
 #include <variant>
@@ -87,26 +88,36 @@ class Row {
      * @brief A wrapper around `set_data_at` for varchar type.
      * Returns nothing if successful.
      * Returns `DataAccessError::IndexOutOfBound` if index is out of bound.
-     * Returns `DataAccessError::InvalidDataType` if `T` is not the same as
-     * the current alternative held by the column.
+     * Returns `DataAccessError::InvalidDataType` if the current value held
+     * by the specified column is not `varchar` (aka, `std::string`)
      *
      * @param index the specifed column index.
      * @param data the specifed value.
      */
     auto set_varchar_data_at(std::size_t index, auto&& data)
         -> std::expected<void, DataAccessError> {
-        return set_data_at<std::string>(index, std::forward<std::string>(data));
+        return set_data_at<VarChar>(index, std::forward<std::string>(data));
     }
 
+    /**
+     * @brief A wrapper around `set_data_at` for uint32 type.
+     * Returns nothing if successful.
+     * Returns `DataAccessError::IndexOutOfBound` if index is out of bound.
+     * Returns `DataAccessError::InvalidDataType` if the current value held
+     * by the specified column is not `uint32`
+     *
+     * @param index the specifed column index.
+     * @param data the specifed value.
+     */
     auto set_uint32_data_at(std::size_t index, auto&& data)
         -> std::expected<void, DataAccessError> {
-        return set_data_at<std::uint32_t>(index,
-                                          std::forward<std::uint32_t>(data));
+        return set_data_at<UInt32>(index, std::forward<std::uint32_t>(data));
     }
 
   private:
+    Row() = default;
     std::vector<ColumnVariant> m_cols;
-    std::size_t m_rowid;
+    std::size_t m_rowid{0};
 
     friend class RowBuilder;
 };

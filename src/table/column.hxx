@@ -4,24 +4,17 @@
 #include <expected>
 #include <string>
 #include <variant>
+#include "data_type.hxx"
 
 namespace smoldb {
 
 template <typename T>
 concept CT = requires {
-    std::is_same_v<T, std::uint32_t> || std::is_same_v<T, std::string>;
+    std::is_same_v<T, UInt32> || std::is_same_v<T, VarChar>;
 };
 
 template <CT T> class Column {
   public:
-    Column(std::uint32_t id, std::string_view name)
-        : m_name(name), m_col_id(id) {}
-
-    // I know what auto&& means already, but gosh, I hate how it looks
-    // so similar to a rvalue reference.
-    Column(std::uint32_t id, std::string_view name, auto&& data)
-        : m_name(name), m_data(std::forward<T>(data)), m_col_id(id) {}
-
     /**
      * @return the name of this column.
      */
@@ -49,12 +42,22 @@ template <CT T> class Column {
     void set_data(auto&& data) noexcept { m_data = std::forward<T>(data); }
 
   private:
+    Column(std::uint32_t id, std::string_view name)
+        : m_name(name), m_col_id(id) {}
+
+    // I know what auto&& means already, but gosh, I hate how it looks
+    // so similar to a rvalue reference.
+    Column(std::uint32_t id, std::string_view name, auto&& data)
+        : m_name(name), m_data(std::forward<T>(data)), m_col_id(id) {}
+
     std::string m_name;
     T m_data;
     std::uint32_t m_col_id{0};
+
+    friend class ColumnBuilder;
 };
 
-using ColumnVariant = std::variant<Column<std::uint32_t>, Column<std::string>>;
+using ColumnVariant = std::variant<Column<UInt32>, Column<VarChar>>;
 
 } // namespace smoldb
 
