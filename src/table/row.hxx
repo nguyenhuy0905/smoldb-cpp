@@ -38,10 +38,26 @@ class Row {
         return {std::get<T>(m_cols[index])};
     }
 
+    /**
+     * @brief Returns the row ID of this row.
+     *
+     * @return the row ID of this row.
+     */
     [[nodiscard]] auto get_rowid() const noexcept -> std::size_t {
         return m_rowid;
     }
 
+    /**
+     * @brief Sets the data at specified column to the specifed value.
+     * Returns nothing if successful.
+     * Returns `DataAccessError::IndexOutOfBound` if index is out of bound.
+     * Returns `DataAccessError::InvalidDataType` if `T` is not the same as
+     * the current alternative held by the column.
+     *
+     * @param index the specifed column index.
+     * @param data the specifed value.
+     * @return
+     */
     template <CT T>
     auto set_data_at(std::size_t index,
                      auto&& data) -> std::expected<void, DataAccessError> {
@@ -53,6 +69,9 @@ class Row {
         if (index >= m_cols.size()) {
             return std::unexpected(DataAccessError::IndexOutOfBound);
         }
+        // technically this ccould be an `if constexpr`, but in no situation
+        // will this be evaluated at compile time. So, `constexpr` here would
+        // be misleading.
         if (not std::holds_alternative<T>(m_cols[index])) {
             return std::unexpected(DataAccessError::InvalidDataType);
         }
