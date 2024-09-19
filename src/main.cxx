@@ -1,42 +1,23 @@
-#include "column_builder.hxx"
-#include "row.hxx"
-#include "row_builder.hxx"
+#include "column.hxx"
+#include <iostream>
 #include <print>
 auto main() -> int {
     // placeholder
 
-    auto row =
-        smoldb::RowBuilder::init()
-            .set_rowid(0)
-            .and_then([](smoldb::RowBuilder& rowb) {
-                // note: copy elision. No move needed here.
-                return rowb.add_column(
-                    smoldb::ColumnBuilder::build<std::uint32_t>(
-                        1, "TestCol", 2U));
-            })
-            .and_then([](smoldb::RowBuilder& rowb) { return rowb.build(); });
+    std::uint8_t something = smoldb::combine(smoldb::ColumnFlags::PrimaryKey,
+                                             smoldb::ColumnFlags::PrimaryKey,
+                                             smoldb::ColumnFlags::Nonsense);
 
-    if (row.has_value()) {
-        std::println("Row successfully built");
-    } else {
-        std::println("Row unsuccessully built");
-        using RowError = smoldb::RowBuilder::RowBuildingError;
-        switch (row.error()) {
-        case RowError::IDAlreadySet:
-            std::println("ID already set");
-            return 1;
-        case RowError::IDNotSet:
-            std::println("ID not set");
-            return 1;
-        case RowError::NoColumnAdded:
-            std::println("No column added");
-            return 1;
-        }
-    }
+    // i don't know why I need the + 0 at the end though.
+    // it seems that this damn language just treats it as an unsigned char.
 
-    std::println("{}", row->get_data_at<uint32_t>(0)->get());
-    row->set_data_at<std::uint32_t>(0, 1U);
-    std::println("{}", row->get_data_at<uint32_t>(0)->get());
+    std::cout << "value of something is: " << something + 0 << "\n";
+
+    std::cout << "value of chain ORs is: "
+              << (smoldb::ColumnFlags::PrimaryKey |
+                  smoldb::ColumnFlags::PrimaryKey |
+                  smoldb::ColumnFlags::PrimaryKey) + 0
+              << "\n";
 
     return 0;
 }
