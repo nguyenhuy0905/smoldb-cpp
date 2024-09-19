@@ -52,6 +52,8 @@ template <CT T> class Column {
     void set_data(auto&& data) noexcept { m_data = std::forward<T>(data); }
 
   private:
+    Column() = default;
+
     Column(std::uint32_t id, std::string_view name)
         : m_name(name), m_col_id(id) {}
 
@@ -61,7 +63,7 @@ template <CT T> class Column {
         : m_name(name), m_data(std::forward<T>(data)), m_col_id(id) {}
 
     std::string m_name;
-    T m_data;
+    T m_data{};
     std::uint32_t m_col_id{0};
     std::underlying_type_t<ColumnFlags> m_flags{0};
 

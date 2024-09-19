@@ -11,6 +11,8 @@ enum class ColumnBuildingError : uint8_t {
     NonsensicalFlag = 1,
     ColIDNotSet,
     ColIDAlreadySet,
+    // future uses
+    // NullValueOnNonNull,
 };
 /**
  * @class ColumnBuilder
@@ -26,13 +28,22 @@ template <CT T> class ColumnBuilder {
      * @brief Constructs a new ColumnBuilder.
      *
      */
-    static auto init() -> ColumnBuilder;
+    static auto init() -> ColumnBuilder { return ColumnBuilder{}; }
+
+    auto set_name(std::string_view strv)
+        -> std::expected<std::reference_wrapper<ColumnBuilder>,
+                         ColumnBuildingError> {
+            m_build.m_name = strv;
+            return {*this};
+        }
 
     template <typename Tp>
         requires std::same_as<std::remove_cvref_t<Tp>, T>
-    auto set_value(Tp&& val) -> std::reference_wrapper<ColumnBuilder> {
+    auto
+    set_value(Tp&& val) -> std::expected<std::reference_wrapper<ColumnBuilder>,
+                                         ColumnBuildingError> {
         m_build.set_data(std::forward<T>(val));
-        return this;
+        return {*this};
     }
 
     /**
@@ -49,7 +60,7 @@ template <CT T> class ColumnBuilder {
         }
 
         m_build.m_flags = flag;
-        return {this};
+        return {*this};
     }
 
     /**
@@ -59,15 +70,14 @@ template <CT T> class ColumnBuilder {
      *
      * @param colid
      */
-    auto
-    change_column_id(std::underlying_type_t<typename Column<T>::m_col_id> colid)
+    auto change_column_id(std::uint32_t colid)
         -> std::expected<std::reference_wrapper<ColumnBuilder>,
                          ColumnBuildingError> {
         if (!is_colid_set) {
             return std::unexpected(ColumnBuildingError::ColIDNotSet);
         }
         m_build.m_col_id = colid;
-        return {this};
+        return {*this};
     }
 
     /**
@@ -77,20 +87,45 @@ template <CT T> class ColumnBuilder {
      *
      * @param colid
      */
-    auto
-    set_column_id(std::underlying_type_t<typename Column<T>::m_col_id> colid)
+    auto set_column_id(std::uint32_t colid)
         -> std::expected<std::reference_wrapper<ColumnBuilder>,
                          ColumnBuildingError> {
         if (is_colid_set) {
             return std::unexpected(ColumnBuildingError::ColIDAlreadySet);
         }
         is_colid_set = true;
-        // this does incur 1 unnecessary check. But, it should not be so slow that
-        // it's concerning.
+        // this does incur 1 unnecessary check. But, it should not be so slow
+        // that it's concerning.
         return change_column_id(colid);
     }
 
+    auto build() -> std::expected<Column<T>, ColumnBuildingError> {
+        if (!is_colid_set) {
+            return std::unexpected(ColumnBuildingError::ColIDNotSet);
+        }
+
+        return std::move(m_build);
+    }
+
+    template <typename Tp>
+        requires std::same_as<std::remove_cvref_t<Tp>, T>
+    static auto build(std::uint32_t colid, Tp&& val, std::string_view name, std::uint8_t flag)
+        -> std::expected<Column<T>, ColumnBuildingError> {
+        return ColumnBuilder::init()
+            .set_column_id(colid)
+            .and_then([&](ColumnBuilder& colb) {
+                return colb.set_value(std::forward<T>(val));
+            })
+            .and_then([=](ColumnBuilder& colb) {
+                return colb.set_column_flags(flag);
+            }).and_then([&](ColumnBuilder& colb) {
+                return colb.set_name(name); 
+            })
+            .and_then([](ColumnBuilder& colb) { return colb.build(); });
+    }
+
   private:
+    ColumnBuilder() = default;
     Column<T> m_build;
     bool is_colid_set{false};
 };
