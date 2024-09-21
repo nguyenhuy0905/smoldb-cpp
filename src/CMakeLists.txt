@@ -13,8 +13,6 @@ smoldb_cpp_target_module_if_enabled(
     smoldb_cpp_lib
     MODULE_FILES
     lib.cxxm
-    # SOURCE_FILES
-    # lib.cxxm
 )
 
 target_link_libraries(smoldb_cpp_lib
@@ -24,6 +22,8 @@ target_link_libraries(smoldb_cpp_lib
     PRIVATE
     smoldb_cpp_compile_opts
 )
+
+add_library(smoldb_cpp::smoldb_cpp ALIAS smoldb_cpp_lib)
 
 include(GenerateExportHeader)
 generate_export_header(smoldb_cpp_lib BASE_NAME "smoldb_cpp")
@@ -35,6 +35,6 @@ target_sources(smoldb_cpp_main
 target_link_libraries(
     smoldb_cpp_main
     PUBLIC
-    smoldb_cpp_lib
+    smoldb_cpp::smoldb_cpp
     PRIVATE
     smoldb_cpp_compile_opts)
