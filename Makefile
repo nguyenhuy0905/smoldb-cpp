@@ -6,7 +6,7 @@
 
 override MAKEFILE_PATH := $(abspath $(lastword $(MAKEFILE_LIST)))
 override MAKEFILE_DIR := $(patsubst %/Makefile,%,$(MAKEFILE_PATH))
-override BUILD_DIR := $(MAKEFILE_DIR)/build
+BUILD_DIR := $(MAKEFILE_DIR)
 BUILD_TYPE := Debug
 CONAN_OPTIONS := "install_cmake=False install_ccache=False"
 override CONAN_OPTIONS_CMDLINE := $(foreach opt,$(CONAN_OPTIONS),$(patsubst %,-o options/all:%,$(opt)))
@@ -25,6 +25,7 @@ endif
 conan-install:
 	conan install . --build=missing \
 		-s build_type=${CMAKE_BUILD_TYPE} \
+		--output-folder=${BUILD_DIR}\
 		$(CONAN_OPTIONS_CMDLINE)
 	@make conan-venv-help
 
