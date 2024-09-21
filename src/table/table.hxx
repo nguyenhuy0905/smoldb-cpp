@@ -62,6 +62,8 @@ SMOLDB_CPP_EXPORT namespace smoldb {
          * @brief A skip list of column offsets.
          */
         std::vector<std::uint16_t> m_offset;
+
+        friend class TableBuilder;
     };
 
     [[nodiscard]] constexpr auto Table::get_col_meta_at(std::uint16_t pos)
