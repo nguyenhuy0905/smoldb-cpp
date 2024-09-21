@@ -1,5 +1,6 @@
 compile_commands.json
 build/*
+_mod/*
 .vs/*
 .vscode/*
 .cache/*
