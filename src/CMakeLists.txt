@@ -1,36 +1,28 @@
 include(../cmake/ModuleIfEnabled.cmake)
 target_include_directories(smoldb_cpp_compile_opts
     INTERFACE
-    $<BUILD_INTERFACE:"${CMAKE_CURRENT_BINARY_DIR}">
-    $<INSTALL_INTERFACE:"${CMAKE_INSTALL_INCLUDEDIR}">
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR};${CMAKE_CURRENT_SOURCE_DIR}>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
-smoldb_cpp_target_module_if_enabled(
-    TARGET
-    smoldb_cpp_data_type
-    MODULE_FILES
-    data_type.cxx
-    HEADER_FILES
-    data_type.hxx
-    SOURCE_FILES
-    dummy.cxx
-)
+add_subdirectory(table)
 
 smoldb_cpp_target_module_if_enabled(
     TARGET
     smoldb_cpp_lib
     MODULE_FILES
-    lib.cxx
+    lib.cxxm
     HEADER_FILES
     dummy.hxx
     SOURCE_FILES
-    lib.cxx
+    dummy.cxx
 )
 
 target_link_libraries(smoldb_cpp_lib
+    PUBLIC
+    smoldb_cpp_column_meta
     PRIVATE
     smoldb_cpp_compile_opts
-    smoldb_cpp_data_type
 )
 
 include(GenerateExportHeader)
