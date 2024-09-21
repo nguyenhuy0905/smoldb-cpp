@@ -13,8 +13,8 @@ smoldb_cpp_target_module_if_enabled(
     smoldb_cpp_lib
     MODULE_FILES
     lib.cxxm
-    SOURCE_FILES
-    lib.cxxm
+    # SOURCE_FILES
+    # lib.cxxm
 )
 
 target_link_libraries(smoldb_cpp_lib

@@ -4,4 +4,6 @@
 module;
 
 export module smoldb_cpp;
+export import :column_meta;
+export import :table;
 #endif // ENABLE_MODULE
