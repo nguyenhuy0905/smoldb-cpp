@@ -1,3 +1,4 @@
+#ifndef SMOLDB_CPP_COLUMN_META_HXX
 #include "module_cfg.h"
 
 #ifndef ENABLE_MODULE
@@ -318,3 +319,5 @@ SMOLDB_CPP_EXPORT namespace smoldb {
         : m_name(std::move(name)), m_col_id(id), m_col_size(size), m_type(T),
           m_flags(flags) {}
 }
+
+#endif // !SMOLDB_CPP_COLUMN_META_HXX
