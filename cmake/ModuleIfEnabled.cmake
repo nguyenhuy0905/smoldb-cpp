@@ -27,13 +27,18 @@ function(smoldb_cpp_target_module_if_enabled)
         PUBLIC FILE_SET HEADERS
         FILES
         ${smoldb_cpp_HEADER_FILES}
-    )
+        )
     endif()
     if(smoldb_cpp_SOURCE_FILES)
         target_sources(${smoldb_cpp_TARGET}
-        PRIVATE
-        ${smoldb_cpp_SOURCE_FILES}
-    )
+            PRIVATE
+            ${smoldb_cpp_SOURCE_FILES}
+        )
+    elseif(NOT smoldb_cpp_ENABLE_MODULE)
+        target_sources(${smoldb_cpp_TARGET}
+            PRIVATE
+            ${PROJECT_SOURCE_DIR}/cmake/dummy.cxx
+        )
     endif()
     if(smoldb_cpp_ENABLE_MODULE)
         target_sources(${smoldb_cpp_TARGET}
