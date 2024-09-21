@@ -7,20 +7,20 @@ target_include_directories(smoldb_cpp_compile_opts
 
 add_subdirectory(table)
 
+add_library(smoldb_cpp_lib)
 smoldb_cpp_target_module_if_enabled(
     TARGET
     smoldb_cpp_lib
     MODULE_FILES
     lib.cxxm
-    HEADER_FILES
-    dummy.hxx
     SOURCE_FILES
-    dummy.cxx
+    lib.cxxm
 )
 
 target_link_libraries(smoldb_cpp_lib
     PUBLIC
     smoldb_cpp_column_meta
+    smoldb_cpp_table
     PRIVATE
     smoldb_cpp_compile_opts
 )
@@ -32,6 +32,9 @@ add_library(smoldb_cpp_main)
 target_sources(smoldb_cpp_main
     PRIVATE
     main.cxx)
-target_link_libraries(smoldb_cpp_main
+target_link_libraries(
+    smoldb_cpp_main
+    PUBLIC
+    smoldb_cpp_lib
     PRIVATE
     smoldb_cpp_compile_opts)

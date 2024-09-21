@@ -12,7 +12,7 @@
 # HEADER_FILES: files to be targeted as HEADERS in target_sources
 #
 # SOURCE_FILES: files to be passed as source files
-macro(smoldb_cpp_target_module_if_enabled)
+function(smoldb_cpp_target_module_if_enabled)
     cmake_parse_arguments(smoldb_cpp "" "TARGET"
                           "MODULE_FILES;SOURCE_FILES;HEADER_FILES" ${ARGN})
     if(smoldb_cpp_UNPARSED_ARGUMENTS)
@@ -20,15 +20,25 @@ macro(smoldb_cpp_target_module_if_enabled)
             FATAL_ERROR
                 "Unknown arguments passed in: ${smoldb_cpp_UNPARSED_ARGUMENTS}")
     endif()
-    add_library(${smoldb_cpp_TARGET})
     target_link_libraries(${smoldb_cpp_TARGET} PRIVATE smoldb_cpp_compile_opts)
-    target_sources(
+    if(smoldb_cpp_HEADER_FILES)
+        target_sources(
         ${smoldb_cpp_TARGET}
-        PUBLIC FILE_SET HEADERS FILES ${smoldb_cpp_HEADER_FILES}
-        PRIVATE ${smoldb_cpp_SOURCE_FILES} ${smoldb_cpp_MODULE_FILES}
-                ${PROJECT_SOURCE_DIR}/cmake/dummy.cxx)
-    if(smoldb_cpp_ENABLE_MODULE)
-        target_sources(${smoldb_cpp_TARGET} PUBLIC FILE_SET CXX_MODULES FILES
-                                               ${smoldb_cpp_MODULE_FILES})
+        PUBLIC FILE_SET HEADERS
+        FILES
+        ${smoldb_cpp_HEADER_FILES}
+    )
     endif()
-endmacro()
+    if(smoldb_cpp_SOURCE_FILES)
+        target_sources(${smoldb_cpp_TARGET}
+        PRIVATE
+        ${smoldb_cpp_SOURCE_FILES}
+    )
+    endif()
+    if(smoldb_cpp_ENABLE_MODULE)
+        target_sources(${smoldb_cpp_TARGET}
+            PUBLIC FILE_SET CXX_MODULES
+            FILES
+            ${smoldb_cpp_MODULE_FILES})
+    endif()
+endfunction()

@@ -1,3 +1,4 @@
+add_library(smoldb_cpp_column_meta)
 smoldb_cpp_target_module_if_enabled(
     TARGET
     smoldb_cpp_column_meta
@@ -14,6 +15,7 @@ target_link_libraries(smoldb_cpp_column_meta
     smoldb_cpp_compile_opts
 )
 
+add_library(smoldb_cpp_table)
 smoldb_cpp_target_module_if_enabled(
     TARGET
     smoldb_cpp_table
@@ -21,8 +23,8 @@ smoldb_cpp_target_module_if_enabled(
     table.cxxm
     HEADER_FILES
     table.hxx
-    SOURCE_FILES
-    table.cxx
+    # SOURCE_FILES
+    # table.cxx
 )
 
 target_link_libraries(smoldb_cpp_table
