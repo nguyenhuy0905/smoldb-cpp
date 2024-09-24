@@ -29,9 +29,6 @@ SMOLDB_CPP_EXPORT namespace smoldb {
         template <typename... Args> static auto from(Args&&... args) -> Table {
             return Table{ std::forward<Args>(args)... };
         }
-
-      private:
-        Table m_build;
     };
 
 } // namespace smoldb
