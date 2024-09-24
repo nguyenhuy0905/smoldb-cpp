@@ -19,6 +19,7 @@ target_link_libraries(smoldb_cpp_lib
     PUBLIC
     smoldb_cpp_column_meta
     smoldb_cpp_table
+    smoldb_cpp_table_builder
     PRIVATE
     smoldb_cpp_compile_opts
 )
@@ -28,7 +29,7 @@ add_library(smoldb_cpp::smoldb_cpp ALIAS smoldb_cpp_lib)
 include(GenerateExportHeader)
 generate_export_header(smoldb_cpp_lib BASE_NAME "smoldb_cpp")
 
-add_library(smoldb_cpp_main)
+add_executable(smoldb_cpp_main)
 target_sources(smoldb_cpp_main
     PRIVATE
     main.cxx)

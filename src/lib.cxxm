@@ -6,4 +6,6 @@ module;
 export module smoldb_cpp;
 export import :column_meta;
 export import :table;
+export import :table_builder;
+// TODO: remove table_builder as an import
 #endif // ENABLE_MODULE
