@@ -1,4 +1,5 @@
 #ifndef SMOLDB_CPP_COLUMN_META_HXX
+#define SMOLDB_CPP_COLUMN_META_HXX
 #include "module_cfg.h"
 
 #ifndef ENABLE_MODULE
@@ -116,6 +117,11 @@ SMOLDB_CPP_EXPORT namespace smoldb {
     constexpr auto contains(std::underlying_type_t<ColumnFlags> val,
                             decltype(val) filter) -> bool;
 
+    /**
+     * @class ColumnMeta
+     * @brief Represents a column inside the database.
+     *
+     */
     class ColumnMeta {
       public:
         /**
@@ -227,6 +233,8 @@ SMOLDB_CPP_EXPORT namespace smoldb {
         std::uint16_t m_col_size;
         ColumnType m_type;
         std::underlying_type_t<ColumnFlags> m_flags;
+
+        friend class Table;
     };
 
     /*

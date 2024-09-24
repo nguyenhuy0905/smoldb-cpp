@@ -1,0 +1,10 @@
+#ifdef ENABLE_MODULE
+module;
+#include <expected>
+
+export module smoldb_cpp:table_builder;
+export import :table_builder_impl;
+import :table;
+#endif // DEBUG
+
+#include "table_builder.hxx"

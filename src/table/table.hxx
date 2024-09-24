@@ -1,6 +1,7 @@
 #ifndef SMOLDB_CPP_TABLE_HXX
 #define SMOLDB_CPP_TABLE_HXX
 
+#include <span>
 #ifndef ENABLE_MODULE
 #include "column_meta.hxx"
 #include <expected>
@@ -22,6 +23,7 @@ SMOLDB_CPP_EXPORT namespace smoldb {
         };
 
       public:
+        Table() = delete;
         /**
          * @return The name of the table.
          */
@@ -50,6 +52,7 @@ SMOLDB_CPP_EXPORT namespace smoldb {
                              TableAccessError>;
 
       private:
+        Table(std::string_view name, std::span<ColumnMeta> cols = {});
         /**
          * @brief Name of the table.
          */
