@@ -4,6 +4,8 @@
 module;
 #include <cstdint>
 #include <expected>
+#include <span>
+#include <string_view>
 #include <vector>
 #endif // DEBUG
 #ifdef ENABLE_MODULE
@@ -11,3 +13,8 @@ export module smoldb_cpp:table;
 export import :column_meta;
 #endif // def ENABLE_MODULE
 #include "table.hxx"
+
+namespace smoldb {
+Table::Table(std::string_view name, std::span<ColumnMeta> cols)
+    : m_name(name.begin(), name.end()), m_cols(cols.begin(), cols.end()) {}
+} // namespace smoldb

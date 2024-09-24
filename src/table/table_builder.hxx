@@ -27,7 +27,7 @@ SMOLDB_CPP_EXPORT namespace smoldb {
         TableBuilder() = delete;
         // TODO: stop being lazy and provide the arguments needed.
         template <typename... Args> static auto from(Args&&... args) -> Table {
-            return Table(std::forward<Args>(args)...);
+            return Table{ std::forward<Args>(args)... };
         }
 
       private:

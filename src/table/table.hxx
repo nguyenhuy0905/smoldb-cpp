@@ -1,10 +1,11 @@
 #ifndef SMOLDB_CPP_TABLE_HXX
 #define SMOLDB_CPP_TABLE_HXX
 
-#include <span>
 #ifndef ENABLE_MODULE
 #include "column_meta.hxx"
 #include <expected>
+#include <span>
+#include <string_view>
 #include <vector>
 #endif // !ENABLE_MODULE
 
