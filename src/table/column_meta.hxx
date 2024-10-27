@@ -10,9 +10,6 @@
 
 SMOLDB_CPP_EXPORT namespace smoldb {
 
-    using UnsignedString = std::basic_string<unsigned char>;
-    using UnsignedStringView = std::basic_string_view<unsigned char>;
-
     /**
      * @brief The types recognized by `smoldb`.
      *
@@ -141,7 +138,7 @@ SMOLDB_CPP_EXPORT namespace smoldb {
             requires(is_scalar(T) &&
                      (std::is_same_v<Fl, ColumnFlags> ||
                       std::is_same_v<Fl, std::underlying_type_t<ColumnFlags>>))
-        constexpr ColumnMeta(std::basic_string_view<unsigned char> name,
+        constexpr ColumnMeta(std::string_view name,
                              std::uint32_t id, Fl flags);
 
         /**
@@ -163,7 +160,7 @@ SMOLDB_CPP_EXPORT namespace smoldb {
             requires(is_long_variable(T) &&
                      (std::is_same_v<Fl, ColumnFlags> ||
                       std::is_same_v<Fl, std::underlying_type_t<ColumnFlags>>))
-        constexpr ColumnMeta(std::basic_string_view<unsigned char> name,
+        constexpr ColumnMeta(std::string_view name,
                              std::uint32_t id, std::uint16_t size, Fl flags);
 
         /**
@@ -185,14 +182,14 @@ SMOLDB_CPP_EXPORT namespace smoldb {
             requires(is_short_variable(T) &&
                      (std::is_same_v<Fl, ColumnFlags> ||
                       std::is_same_v<Fl, std::underlying_type_t<ColumnFlags>>))
-        constexpr ColumnMeta(std::basic_string_view<unsigned char> name,
+        constexpr ColumnMeta(std::string_view name,
                              std::uint32_t id, std::uint16_t size, Fl flags);
 
         /**
          * @return Name of this column.
          */
         [[nodiscard]] constexpr auto
-        get_name() const noexcept -> std::basic_string_view<unsigned char> {
+        get_name() const noexcept -> std::string_view {
             return this->m_name;
         }
 
@@ -228,7 +225,7 @@ SMOLDB_CPP_EXPORT namespace smoldb {
         }
 
       private:
-        std::basic_string<unsigned char> m_name;
+        std::string m_name;
         std::uint32_t m_col_id;
         std::uint16_t m_col_size;
         ColumnType m_type;
@@ -294,7 +291,7 @@ SMOLDB_CPP_EXPORT namespace smoldb {
         requires(is_scalar(T) &&
                  (std::is_same_v<Fl, ColumnFlags> ||
                   std::is_same_v<Fl, std::underlying_type_t<ColumnFlags>>))
-    constexpr ColumnMeta::ColumnMeta(std::basic_string_view<unsigned char> name,
+    constexpr ColumnMeta::ColumnMeta(std::string_view name,
                                      std::uint32_t id, Fl flags)
         : m_name(std::move(name)), m_col_id(id), m_type(T), m_flags(flags) {
         using enum ColumnType;
@@ -311,7 +308,7 @@ SMOLDB_CPP_EXPORT namespace smoldb {
         requires(is_long_variable(T) &&
                  (std::is_same_v<Fl, ColumnFlags> ||
                   std::is_same_v<Fl, std::underlying_type_t<ColumnFlags>>))
-    constexpr ColumnMeta::ColumnMeta(std::basic_string_view<unsigned char> name,
+    constexpr ColumnMeta::ColumnMeta(std::string_view name,
                                      std::uint32_t id, std::uint16_t size,
                                      Fl flags)
         : m_name(std::move(name)), m_col_id(id), m_col_size(size), m_type(T),
@@ -321,7 +318,7 @@ SMOLDB_CPP_EXPORT namespace smoldb {
         requires(is_short_variable(T) &&
                  (std::is_same_v<Fl, ColumnFlags> ||
                   std::is_same_v<Fl, std::underlying_type_t<ColumnFlags>>))
-    constexpr ColumnMeta::ColumnMeta(std::basic_string_view<unsigned char> name,
+    constexpr ColumnMeta::ColumnMeta(std::string_view name,
                                      std::uint32_t id, std::uint16_t size,
                                      Fl flags)
         : m_name(std::move(name)), m_col_id(id), m_col_size(size), m_type(T),

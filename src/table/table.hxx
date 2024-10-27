@@ -29,7 +29,7 @@ SMOLDB_CPP_EXPORT namespace smoldb {
          * @return The name of the table.
          */
         [[nodiscard]] constexpr auto
-        get_name() const noexcept -> UnsignedStringView {
+        get_name() const noexcept -> std::string_view {
             return this->m_name;
         }
 
@@ -57,7 +57,7 @@ SMOLDB_CPP_EXPORT namespace smoldb {
         /**
          * @brief Name of the table.
          */
-        UnsignedString m_name;
+        std::string m_name;
         /**
          * @brief The list of column metadata.
          */
