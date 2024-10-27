@@ -1,13 +1,8 @@
-// ignore the warnings about unused includes.
-// when the compiler pastes in column_meta, all are used.
-
 #ifdef ENABLE_MODULE
 module;
 #include <cstdint>
 #include <string>
 #include <type_traits>
-#endif // ENABLE_MODULE 
-#ifdef ENABLE_MODULE
 export module smoldb_cpp:column_meta;
 #endif // DEBUG
 #include "column_meta.hxx"

@@ -1,12 +1,11 @@
 #ifndef SMOLDB_CPP_TABLE_BUILDER_HXX
 #define SMOLDB_CPP_TABLE_BUILDER_HXX
-
-#include "column_meta.hxx"
 #include "module_cfg.h"
-#include <type_traits>
 
 #ifndef ENABLE_MODULE
 #include "table.hxx"
+#include "column_meta.hxx"
+#include <type_traits>
 #include <expected>
 #endif // !ENABLE_MODULE
 

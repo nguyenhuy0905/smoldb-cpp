@@ -42,6 +42,8 @@ smoldb_cpp_target_module_if_enabled(
     table_builder.cxxm
     HEADER_FILES
     table_builder.hxx
+    SOURCE_FILES
+    table_builder.cxxm
 )
 target_link_libraries(smoldb_cpp_table_builder
     PRIVATE
