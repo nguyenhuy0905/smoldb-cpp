@@ -1,5 +1,3 @@
-#include "module_cfg.h"
-
 #ifdef ENABLE_MODULE
 module;
 
