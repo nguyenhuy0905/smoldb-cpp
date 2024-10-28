@@ -33,21 +33,3 @@ target_link_libraries(smoldb_cpp_table
     PUBLIC
     smoldb_cpp_column_meta
 )
-
-add_library(smoldb_cpp_table_builder)
-smoldb_cpp_target_module_if_enabled(
-    TARGET
-    smoldb_cpp_table_builder
-    MODULE_FILES
-    table_builder.cxxm
-    HEADER_FILES
-    table_builder.hxx
-    SOURCE_FILES
-    table_builder.cxxm
-)
-target_link_libraries(smoldb_cpp_table_builder
-    PRIVATE
-    smoldb_cpp_compile_opts
-    PUBLIC
-    smoldb_cpp_table
-)

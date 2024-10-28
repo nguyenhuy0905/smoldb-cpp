@@ -1,6 +1,7 @@
 #ifndef SMOLDB_CPP_TABLE_HXX
 #define SMOLDB_CPP_TABLE_HXX
 
+#include <type_traits>
 #ifndef ENABLE_MODULE
 #include "column_meta.hxx"
 #include <expected>
@@ -25,6 +26,7 @@ SMOLDB_CPP_EXPORT namespace smoldb {
 
       public:
         Table() = delete;
+        Table(std::string_view name, std::span<ColumnMeta> cols = {});
         /**
          * @return The name of the table.
          */
@@ -48,12 +50,17 @@ SMOLDB_CPP_EXPORT namespace smoldb {
          *
          * @param pos
          */
-        [[nodiscard]] constexpr auto get_col_meta_at(std::uint16_t pos)
+        [[nodiscard]] constexpr auto get_col_meta_at(std::uint16_t pos) const
             -> std::expected<std::reference_wrapper<const ColumnMeta>,
                              TableAccessError>;
 
+        template <typename T>
+            requires std::is_same_v<T, ColumnMeta>
+        constexpr void add_column(T&& col) {
+            m_cols.push_back(std::forward<T>(col));
+        }
+
       private:
-        Table(std::string_view name, std::span<ColumnMeta> cols = {});
         /**
          * @brief Name of the table.
          */
@@ -71,8 +78,8 @@ SMOLDB_CPP_EXPORT namespace smoldb {
     };
 
     [[nodiscard]] constexpr auto Table::get_col_meta_at(std::uint16_t pos)
-        -> std::expected<std::reference_wrapper<const ColumnMeta>,
-                         TableAccessError> {
+        const -> std::expected<std::reference_wrapper<const ColumnMeta>,
+                               TableAccessError> {
         if (pos >= this->m_cols.size()) {
             return std::unexpected(TableAccessError::IndexOutOfBounds);
         }

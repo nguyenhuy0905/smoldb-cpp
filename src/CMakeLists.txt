@@ -19,7 +19,6 @@ target_link_libraries(smoldb_cpp_lib
     PUBLIC
     smoldb_cpp_column_meta
     smoldb_cpp_table
-    smoldb_cpp_table_builder
     PRIVATE
     smoldb_cpp_compile_opts
 )

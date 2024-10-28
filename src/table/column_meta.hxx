@@ -54,10 +54,7 @@ SMOLDB_CPP_EXPORT namespace smoldb {
      * @tparam T
      * @param coltype
      */
-    template <typename T>
-        requires(std::is_same_v<T, ColumnType> ||
-                 std::is_same_v<T, std::underlying_type_t<ColumnType>>)
-    constexpr auto is_scalar(T coltype) -> bool;
+    constexpr auto is_scalar(ColumnType coltype) -> bool;
 
     /**
      * @brief Whether `coltype` is a short variable type.
@@ -65,10 +62,7 @@ SMOLDB_CPP_EXPORT namespace smoldb {
      * @tparam T
      * @param coltype
      */
-    template <typename T>
-        requires(std::is_same_v<T, ColumnType> ||
-                 std::is_same_v<T, std::underlying_type_t<ColumnType>>)
-    constexpr auto is_short_variable(T coltype) -> bool;
+    constexpr auto is_short_variable(ColumnType coltype) -> bool;
 
     /**
      * @brief Whether `coltype` is a long variable type.
@@ -76,22 +70,27 @@ SMOLDB_CPP_EXPORT namespace smoldb {
      * @tparam T
      * @param coltype
      */
-    template <typename T>
-        requires(std::is_same_v<T, ColumnType> ||
-                 std::is_same_v<T, std::underlying_type_t<ColumnType>>)
-    constexpr auto is_long_variable(T coltype) -> bool;
+    constexpr auto is_long_variable(ColumnType coltype) -> bool;
 
     /**
      * @brief Definition of bitmaps that a ColumnMeta holds.
-     *
-     * For now, only PrimaryKey is used.
      */
     enum class ColumnFlags : std::uint8_t {
+        // It's really "nothing special"
+        NothingSpecial = 0,
+        // Good old primary key. Not nullable, of course.
+        // A very crude method is used: compare byte-by-byte the data of a
+        // primary key.
         PrimaryKey = 1 << 0,
-        SecondaryKey = 1 << 1,
-        ForeignKey = 1 << 2,
-        Nullable = 1 << 3,
-        UniqueValue = 1 << 4,
+        // I doubt I'm gonna implement this any time soon.
+        // Holds the primary key of another table.
+        ForeignKey = 1 << 1,
+        // Uses an extra byte at the front to mark whether we're dealing with a
+        // null value.
+        Nullable = 1 << 2,
+        // There will be a dedicated hashtable to check for uniqueness of this
+        // entry.
+        UniqueValue = 1 << 3,
     };
 
     /**
@@ -129,17 +128,18 @@ SMOLDB_CPP_EXPORT namespace smoldb {
          * @tparam `Fl` representation of `ColumnFlags`. Can be `ColumnFlags`
          * itself, or the underlying type of `ColumnFlags`.
          * @param `name` the name of the column.
-         * @param `id` the ID of the column. In any given table, a column must
-         * have an unique ID.
          * @param `flags` can be one `ColumnFlags` or a bitmap.
-         * @return
+         * @param `id` the ID of the column. In any given table, a column must
+         * have an unique ID. ID = 0 delegates the ID resolution to the `Table`
+         * object when this column is added into one.
+         * @return A newly constructed `ColumnMeta`
          */
         template <ColumnType T, typename Fl>
             requires(is_scalar(T) &&
-                     (std::is_same_v<Fl, ColumnFlags> ||
-                      std::is_same_v<Fl, std::underlying_type_t<ColumnFlags>>))
-        constexpr ColumnMeta(std::string_view name,
-                             std::uint32_t id, Fl flags);
+                     std::is_same_v<std::underlying_type_t<Fl>,
+                                    std::underlying_type_t<ColumnFlags>>)
+        constexpr ColumnMeta(std::string_view name, Fl flags = 0,
+                             std::uint32_t id = 0);
 
         /**
          * @brief Constructor called when `ColumnType T` can be longer than a
@@ -147,21 +147,26 @@ SMOLDB_CPP_EXPORT namespace smoldb {
          *
          * Such a type is `Text`.
          *
+         * WIP: maybe I will store these large stuff as separate files. Maybe
+         * the implementation will be kinda like how `git` stores stuff: abuse
+         * the machine's filesystem.
+         *
          * @tparam `Fl` representation of `ColumnFlags`. Can be `ColumnFlags`
          * itself, or the underlying type of `ColumnFlags`.
          * @param `name` the name of the column.
-         * @param `id` the ID of the column. In any given table, a column must
-         * have an unique ID.
          * @param `size` the size of this column.
          * @param `flags` can be one `ColumnFlags` or a bitmap.
-         * @return
+         * @param `id` the ID of the column. In any given table, a column must
+         * have an unique ID. ID = 0 delegates the ID resolution to the `Table`
+         * object when this column is added into one.
+         * @return A newly constructed `ColumnMeta`
          */
         template <ColumnType T, typename Fl>
             requires(is_long_variable(T) &&
-                     (std::is_same_v<Fl, ColumnFlags> ||
-                      std::is_same_v<Fl, std::underlying_type_t<ColumnFlags>>))
-        constexpr ColumnMeta(std::string_view name,
-                             std::uint32_t id, std::uint16_t size, Fl flags);
+                     std::is_same_v<std::underlying_type_t<Fl>,
+                                    std::underlying_type_t<ColumnFlags>>)
+        constexpr ColumnMeta(std::string_view name, std::uint16_t size,
+                             Fl flags = 0, std::uint32_t id = 0);
 
         /**
          * @brief Constructor called when `ColumnType T` is a short
@@ -172,18 +177,20 @@ SMOLDB_CPP_EXPORT namespace smoldb {
          * @tparam `Fl` representation of `ColumnFlags`. Can be `ColumnFlags`
          * itself, or the underlying type of `ColumnFlags`.
          * @param `name` the name of the column.
-         * @param `id` the ID of the column. In any given table, a column must
-         * have an unique ID.
+         * @param `name` the name of the column.
          * @param `size` the size of this column.
          * @param `flags` can be one `ColumnFlags` or a bitmap.
-         * @return
+         * @param `id` the ID of the column. In any given table, a column must
+         * have an unique ID. ID = 0 delegates the ID resolution to the `Table`
+         * object when this column is added into one.
+         * @return A newly constructed `ColumnMeta`
          */
         template <ColumnType T, typename Fl>
             requires(is_short_variable(T) &&
-                     (std::is_same_v<Fl, ColumnFlags> ||
-                      std::is_same_v<Fl, std::underlying_type_t<ColumnFlags>>))
-        constexpr ColumnMeta(std::string_view name,
-                             std::uint32_t id, std::uint16_t size, Fl flags);
+                     std::is_same_v<std::underlying_type_t<Fl>,
+                                    std::underlying_type_t<ColumnFlags>>)
+        constexpr ColumnMeta(std::string_view name, std::uint16_t size,
+                             Fl flags = 0, std::uint32_t id = 0);
 
         /**
          * @return Name of this column.
@@ -235,38 +242,21 @@ SMOLDB_CPP_EXPORT namespace smoldb {
     };
 
     /*
-     *
-     *
-     *
-     *
      * DEFINITIONS
-     *
-     *
-     *
-     *
-     * */
+     */
 
-    template <typename T>
-        requires(std::is_same_v<T, ColumnType> ||
-                 std::is_same_v<T, std::underlying_type_t<ColumnType>>)
-    constexpr auto is_scalar(T coltype) -> bool {
+    constexpr auto is_scalar(ColumnType coltype) -> bool {
         return static_cast<std::underlying_type_t<ColumnType>>(coltype) <=
                FinalScalarType;
     }
 
-    template <typename T>
-        requires(std::is_same_v<T, ColumnType> ||
-                 std::is_same_v<T, std::underlying_type_t<ColumnType>>)
-    constexpr auto is_short_variable(T coltype) -> bool {
+    constexpr auto is_short_variable(ColumnType coltype) -> bool {
         return !is_scalar(coltype) &&
                static_cast<std::underlying_type_t<ColumnType>>(coltype) <=
                    FinalShortVariableType;
     }
 
-    template <typename T>
-        requires(std::is_same_v<T, ColumnType> ||
-                 std::is_same_v<T, std::underlying_type_t<ColumnType>>)
-    constexpr auto is_long_variable(T coltype) -> bool {
+    constexpr auto is_long_variable(ColumnType coltype) -> bool {
         return !is_scalar(coltype) && !is_short_variable(coltype);
     }
 
@@ -289,10 +279,10 @@ SMOLDB_CPP_EXPORT namespace smoldb {
 
     template <ColumnType T, typename Fl>
         requires(is_scalar(T) &&
-                 (std::is_same_v<Fl, ColumnFlags> ||
-                  std::is_same_v<Fl, std::underlying_type_t<ColumnFlags>>))
-    constexpr ColumnMeta::ColumnMeta(std::string_view name,
-                                     std::uint32_t id, Fl flags)
+                 std::is_same_v<std::underlying_type_t<Fl>,
+                                std::underlying_type_t<ColumnFlags>>)
+    constexpr ColumnMeta::ColumnMeta(std::string_view name, Fl flags,
+                                     std::uint32_t id)
         : m_name(std::move(name)), m_col_id(id), m_type(T), m_flags(flags) {
         using enum ColumnType;
         switch (T) {
@@ -306,21 +296,19 @@ SMOLDB_CPP_EXPORT namespace smoldb {
 
     template <ColumnType T, typename Fl>
         requires(is_long_variable(T) &&
-                 (std::is_same_v<Fl, ColumnFlags> ||
-                  std::is_same_v<Fl, std::underlying_type_t<ColumnFlags>>))
-    constexpr ColumnMeta::ColumnMeta(std::string_view name,
-                                     std::uint32_t id, std::uint16_t size,
-                                     Fl flags)
+                 std::is_same_v<std::underlying_type_t<Fl>,
+                                std::underlying_type_t<ColumnFlags>>)
+    constexpr ColumnMeta::ColumnMeta(std::string_view name, std::uint16_t size,
+                                     Fl flags, std::uint32_t id)
         : m_name(std::move(name)), m_col_id(id), m_col_size(size), m_type(T),
           m_flags(flags) {}
 
     template <ColumnType T, typename Fl>
         requires(is_short_variable(T) &&
-                 (std::is_same_v<Fl, ColumnFlags> ||
-                  std::is_same_v<Fl, std::underlying_type_t<ColumnFlags>>))
-    constexpr ColumnMeta::ColumnMeta(std::string_view name,
-                                     std::uint32_t id, std::uint16_t size,
-                                     Fl flags)
+                 std::is_same_v<std::underlying_type_t<Fl>,
+                                std::underlying_type_t<ColumnFlags>>)
+    constexpr ColumnMeta::ColumnMeta(std::string_view name, std::uint16_t size,
+                                     Fl flags, std::uint32_t id)
         : m_name(std::move(name)), m_col_id(id), m_col_size(size), m_type(T),
           m_flags(flags) {}
 }
